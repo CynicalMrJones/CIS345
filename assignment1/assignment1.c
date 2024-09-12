@@ -49,12 +49,20 @@ int main(int argc, char *argv[]){
                 arr[i] = NULL;
             }
             //handle the cd command
-            //Leaving off here
             if(strcmp(arr[0], "cd") == 0){
                 strcat(currentDir,"/");
                 strcat(currentDir,arr[1]);
-                chdir(currentDir);
-                getcwd(promptDir, sizeof(char[1024]));
+                //Error handling for change dir
+                if(chdir(currentDir) == -1){
+                    printf("No such file or DIR...%s\n", currentDir);
+                }
+                else{
+                    getcwd(promptDir, sizeof(char[1024]));
+                }
+            }
+
+            //Handling the PATH command
+            if(strcmp(arr[0], "path") == 0){
             }
             //attempt to execute the command
             execv(exeDir, arr); 
