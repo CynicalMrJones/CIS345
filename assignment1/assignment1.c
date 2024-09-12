@@ -14,14 +14,14 @@ int main(int argc, char *argv[]){
         if (pid == 0) {
             //Child Process
             char buf[1024];
+            char prevDir[1024];
             char currentDir[1024];
             char exeDir[1024] = "/bin/";
             char *token;
             char *arr[10];
             int i = 1;
 
-        //gets current directory and prints it as a shell prompt
-        
+            //gets current directory and prints it as a shell prompt
             getcwd(currentDir, sizeof(char[1024]));
             printf("%s$", currentDir);
 
@@ -47,15 +47,23 @@ int main(int argc, char *argv[]){
             for(i = i; i< 10;i++){
                 arr[i] = NULL;
             }
+            //handle the cd command
+            //Leaving off here
+            if(strcmp(arr[0], "cd") == 0){
+                strcpy(prevDir, currentDir);
+                strcat(currentDir,"/");
+                strcat(currentDir,arr[1]);
+                chdir(currentDir);
+                getcwd(currentDir, sizeof(char[1024]));
+            }
             //attempt to execute the command
             execv(exeDir, arr); 
         }
         else {
             //Parent process
-            waitpid(-1, WIFEXITED(1), 0);
+            waitpid(pid, WIFEXITED(1), 0);
             printf("Hello from parent\n");
             exit(0);
         }
     }
 }
-
