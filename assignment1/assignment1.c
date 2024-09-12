@@ -9,12 +9,13 @@
 
 int main(int argc, char *argv[]){
     int pid = fork();
+    char promptDir[1024];
+    getcwd(promptDir, sizeof(char[1024]));
     while(1){
 
         if (pid == 0) {
             //Child Process
             char buf[1024];
-            char prevDir[1024];
             char currentDir[1024];
             char exeDir[1024] = "/bin/";
             char *token;
@@ -22,8 +23,8 @@ int main(int argc, char *argv[]){
             int i = 1;
 
             //gets current directory and prints it as a shell prompt
+            printf("%s$", promptDir);
             getcwd(currentDir, sizeof(char[1024]));
-            printf("%s$", currentDir);
 
             //get user input 
             fgets(buf, 1024, stdin);
@@ -50,11 +51,10 @@ int main(int argc, char *argv[]){
             //handle the cd command
             //Leaving off here
             if(strcmp(arr[0], "cd") == 0){
-                strcpy(prevDir, currentDir);
                 strcat(currentDir,"/");
                 strcat(currentDir,arr[1]);
                 chdir(currentDir);
-                getcwd(currentDir, sizeof(char[1024]));
+                getcwd(promptDir, sizeof(char[1024]));
             }
             //attempt to execute the command
             execv(exeDir, arr); 
