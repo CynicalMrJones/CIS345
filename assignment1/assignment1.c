@@ -11,8 +11,8 @@ int main(int argc, char *argv[]){
     int pid = fork();
     char promptDir[1024];
     getcwd(promptDir, sizeof(char[1024]));
-    while(1){
 
+    while(1){
         if (pid == 0) {
             //Child Process
             char buf[1024];
@@ -33,7 +33,7 @@ int main(int argc, char *argv[]){
             buf[strcspn(buf, "\n")] = 0;
             //check to see if we need to exit the program
             if(strcmp(buf,"quit") == 0){
-                exit(1);
+                kill(pid, 9);
             }
             // tokenizes the input
             token = strtok(buf," ");
@@ -48,24 +48,41 @@ int main(int argc, char *argv[]){
             for(i = i; i< 10;i++){
                 arr[i] = NULL;
             }
-            //handle the cd command
-            if(strcmp(arr[0], "cd") == 0){
-                strcat(currentDir,"/");
-                strcat(currentDir,arr[1]);
-                //Error handling for change dir
-                if(chdir(currentDir) == -1){
-                    printf("No such file or DIR...%s\n", currentDir);
+            if(execv(exeDir, arr) == -1){
+                //ABSOLUTLY DISGUSING CONDITIONAL STATEMENT
+                if((strcmp(arr[0], "cd") != 0) && (strcmp(arr[0], "path") != 0) 
+                        &&(strcmp(arr[0], "quit") != 0)){
+                    printf("Command not found\n");
                 }
                 else{
-                    getcwd(promptDir, sizeof(char[1024]));
-                }
-            }
+                    //handle the cd command
+                    if(strcmp(arr[0], "cd") == 0){
+                        strcat(currentDir,"/");
+                        strcat(currentDir,arr[1]);
+                        //Error handling for change dir
+                        if(chdir(currentDir) == -1){
+                            printf("No such file or DIR...%s\n", currentDir);
+                        }
+                        else{
+                            getcwd(promptDir, sizeof(char[1024]));
+                        }
+                    }
 
-            //Handling the PATH command
-            if(strcmp(arr[0], "path") == 0){
+                //Handling the PATH command
+                if(strcmp(arr[0], "path") == 0){
+                    if(strcmp(arr[1], "+") == 0){
+                        strcat(exeDir, arr[2]);
+                        printf("New EXE Path: %s\n", exeDir);
+                    }
+                    else if(strcmp(arr[0], "-") == 0){
+
+                    }
+                }
+                }
+            } 
+            else{
+                printf("Command not found\n");
             }
-            //attempt to execute the command
-            execv(exeDir, arr); 
         }
         else {
             //Parent process
