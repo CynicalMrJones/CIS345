@@ -11,7 +11,7 @@ int main(int argc, char *argv[]){
     int pid = fork();
     char promptDir[1024];
     getcwd(promptDir, sizeof(char[1024]));
-    char exeDir[1024] = "/bin/";
+    char exeDir[1024] = "/usr/bin/";
 
     while(1){
         if (pid == 0) {
@@ -38,7 +38,9 @@ int main(int argc, char *argv[]){
             // tokenizes the input
             token = strtok(buf," ");
             arr[0] = token;
-            strcat(exeDir, token);
+            char temp[1024];
+            strcpy(temp, exeDir);
+            strcat(temp, token);
             //fills and array with all the args
             while(token != NULL){
                 token = strtok(NULL, " ");
@@ -48,7 +50,7 @@ int main(int argc, char *argv[]){
             for(i = i; i< 10;i++){
                 arr[i] = NULL;
             }
-            if(execv(exeDir, arr) == -1){
+            if(execv(temp, arr) == -1){
                 //ABSOLUTLY DISGUSING CONDITIONAL STATEMENT
                 if((strcmp(arr[0], "cd") != 0) && (strcmp(arr[0], "path") != 0) 
                         &&(strcmp(arr[0], "quit") != 0)){
@@ -81,11 +83,11 @@ int main(int argc, char *argv[]){
                             strcat(exeDir, arr[2]);
                             printf("New EXE Path: %s\n", exeDir);
                         }
-                        else if(strcmp(arr[0], "-") == 0){
+                        else if(strcmp(arr[1], "-") == 0){
                             //remove path from exeDir
-                            char *ptr = strstr(exeDir, arr[0]);
-                            int len = strlen(arr[0]);
-                            while((ptr = strstr(exeDir, arr[0])) != NULL){
+                            char *ptr = strstr(exeDir, arr[2]);
+                            int len = strlen(arr[2]);
+                            while((ptr = strstr(exeDir, arr[2])) != NULL){
                                 memmove(ptr, ptr+len, strlen(ptr + len)+1);
                             }
                             printf("New EXE Path: %s\n", exeDir);
