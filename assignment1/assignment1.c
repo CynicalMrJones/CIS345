@@ -11,7 +11,7 @@ int main(int argc, char *argv[]){
     int pid = fork();
     char promptDir[1024];
     getcwd(promptDir, sizeof(char[1024]));
-    char exeDir[1024] = "/usr/bin/";
+    char exeDir[1024] = "/usr/";
 
     while(1){
         if (pid == 0) {
@@ -81,10 +81,12 @@ int main(int argc, char *argv[]){
                             }
                             //append on the new path
                             strcat(exeDir, arr[2]);
+                            strcat(exeDir, "/");
                             printf("New EXE Path: %s\n", exeDir);
                         }
                         else if(strcmp(arr[1], "-") == 0){
                             //remove path from exeDir
+                            strcat(arr[2], "/");
                             char *ptr = strstr(exeDir, arr[2]);
                             int len = strlen(arr[2]);
                             while((ptr = strstr(exeDir, arr[2])) != NULL){
