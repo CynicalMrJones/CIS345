@@ -1,6 +1,7 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <fcntl.h>
 #include <unistd.h>
 #include <string.h>
 #include <sys/types.h>
@@ -11,7 +12,7 @@ int main(int argc, char *argv[]){
     int pid = fork();
     char promptDir[1024];
     getcwd(promptDir, sizeof(char[1024]));
-    char exeDir[1024] = "/usr/";
+    char exeDir[1024] = "/bin/";
 
     while(1){
         if (pid == 0) {
@@ -50,6 +51,26 @@ int main(int argc, char *argv[]){
             for(i = i; i< 10;i++){
                 arr[i] = NULL;
             }
+            //Redirection
+            if((arr[1] != NULL) && (strcmp(arr[1], "<") == 0)){
+                int fd = open(arr[2], O_RDONLY);
+                char readIn[1024];
+                read(fd, readIn, sizeof(char[1024]));
+                readIn[strcspn(readIn, "\n")] = 0;
+                strcpy(arr[1], readIn);
+                arr[2] = NULL;
+                close(fd);
+            }
+            if((arr[1] != NULL) && (strcmp(arr[1], ">") == 0)){
+                int fd = open(arr[2], O_WRONLY | O_CREAT | O_TRUNC, 0644);
+                close(1);
+                dup(fd);
+                close(fd);
+                for(int i = 1;i<10; i++){
+                    arr[i] = NULL;
+                }
+            }
+
             if(execv(temp, arr) == -1){
                 //ABSOLUTLY DISGUSING CONDITIONAL STATEMENT
                 if((strcmp(arr[0], "cd") != 0) && (strcmp(arr[0], "path") != 0) 
