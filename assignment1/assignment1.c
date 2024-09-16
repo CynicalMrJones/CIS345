@@ -11,13 +11,13 @@ int main(int argc, char *argv[]){
     int pid = fork();
     char promptDir[1024];
     getcwd(promptDir, sizeof(char[1024]));
+    char exeDir[1024] = "/bin/";
 
     while(1){
         if (pid == 0) {
             //Child Process
             char buf[1024];
             char currentDir[1024];
-            char exeDir[1024] = "/bin/";
             char *token;
             char *arr[10];
             int i = 1;
@@ -68,16 +68,32 @@ int main(int argc, char *argv[]){
                         }
                     }
 
-                //Handling the PATH command
-                if(strcmp(arr[0], "path") == 0){
-                    if(strcmp(arr[1], "+") == 0){
-                        strcat(exeDir, arr[2]);
-                        printf("New EXE Path: %s\n", exeDir);
+                    //Handling the PATH command
+                    if(strcmp(arr[0], "path") == 0){
+                        if(strcmp(arr[1], "+") == 0){
+                            //Remove path from the exeDir
+                            char *ptr = strstr(exeDir, "path");
+                            int len = strlen("path");
+                            while((ptr = strstr(exeDir, "path")) != NULL){
+                                memmove(ptr, ptr+len, strlen(ptr + len)+1);
+                            }
+                            //append on the new path
+                            strcat(exeDir, arr[2]);
+                            printf("New EXE Path: %s\n", exeDir);
+                        }
+                        else if(strcmp(arr[0], "-") == 0){
+                            //remove path from exeDir
+                            char *ptr = strstr(exeDir, arr[0]);
+                            int len = strlen(arr[0]);
+                            while((ptr = strstr(exeDir, arr[0])) != NULL){
+                                memmove(ptr, ptr+len, strlen(ptr + len)+1);
+                            }
+                            printf("New EXE Path: %s\n", exeDir);
+                        }
+                        else{
+                            printf("Path command failed\n");
+                        }
                     }
-                    else if(strcmp(arr[0], "-") == 0){
-
-                    }
-                }
                 }
             } 
         }
