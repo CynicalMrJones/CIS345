@@ -12,7 +12,7 @@ int main(int argc, char *argv[]){
     int pid = fork();
     char promptDir[1024];
     getcwd(promptDir, sizeof(char[1024]));
-    char exeDir[1024] = "/bin/";
+    char exeDir[1024];
 
     while(1){
         if (pid == 0) {
