@@ -93,30 +93,35 @@ int main(int argc, char *argv[]){
 
                     //Handling the PATH command
                     if(strcmp(arr[0], "path") == 0){
-                        if(strcmp(arr[1], "+") == 0){
-                            //Remove path from the exeDir
-                            char *ptr = strstr(exeDir, "path");
-                            int len = strlen("path");
-                            while((ptr = strstr(exeDir, "path")) != NULL){
-                                memmove(ptr, ptr+len, strlen(ptr + len)+1);
-                            }
-                            //append on the new path
-                            strcat(exeDir, arr[2]);
-                            strcat(exeDir, "/");
-                            printf("New EXE Path: %s\n", exeDir);
-                        }
-                        else if(strcmp(arr[1], "-") == 0){
-                            //remove path from exeDir
-                            strcat(arr[2], "/");
-                            char *ptr = strstr(exeDir, arr[2]);
-                            int len = strlen(arr[2]);
-                            while((ptr = strstr(exeDir, arr[2])) != NULL){
-                                memmove(ptr, ptr+len, strlen(ptr + len)+1);
-                            }
-                            printf("New EXE Path: %s\n", exeDir);
+                        if(arr[2] == NULL){
+                            printf("Path not specified try again\n");
                         }
                         else{
-                            printf("Path command failed\n");
+                            if(strcmp(arr[1], "+") == 0){
+                                //Remove path from the exeDir
+                                char *ptr = strstr(exeDir, "path");
+                                int len = strlen("path");
+                                while((ptr = strstr(exeDir, "path")) != NULL){
+                                    memmove(ptr, ptr+len, strlen(ptr + len)+1);
+                                }
+                                //append on the new path
+                                strcat(exeDir, arr[2]);
+                                strcat(exeDir, "/");
+                                printf("New EXE Path: %s\n", exeDir);
+                            }
+                            else if(strcmp(arr[1], "-") == 0){
+                                //remove path from exeDir
+                                strcat(arr[2], "/");
+                                char *ptr = strstr(exeDir, arr[2]);
+                                int len = strlen(arr[2]);
+                                while((ptr = strstr(exeDir, arr[2])) != NULL){
+                                    memmove(ptr, ptr+len, strlen(ptr + len)+1);
+                                }
+                                printf("New EXE Path: %s\n", exeDir);
+                            }
+                            else{
+                                printf("Path command failed\n");
+                            }
                         }
                     }
                 }
