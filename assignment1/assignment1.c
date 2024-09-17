@@ -125,7 +125,6 @@ int main(int argc, char *argv[]){
         else {
             //Parent process
             waitpid(pid, WIFEXITED(1), 0);
-            printf("Hello from parent\n");
             exit(0);
         }
     }
