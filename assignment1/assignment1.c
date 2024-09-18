@@ -13,6 +13,7 @@ int main(int argc, char *argv[]){
     char promptDir[1024];
     getcwd(promptDir, sizeof(char[1024]));
     char exeDir[1024];
+    int quit = 0;
 
     while(1){
         if (pid == 0) {
@@ -71,8 +72,11 @@ int main(int argc, char *argv[]){
                 }
             }
 
+            quit = 0;
+
             if(execv(temp, arr) == -1){
                 //ABSOLUTLY DISGUSING CONDITIONAL STATEMENT
+                quit = 1;
                 if((strcmp(arr[0], "cd") != 0) && (strcmp(arr[0], "path") != 0) 
                         &&(strcmp(arr[0], "quit") != 0)){
                     printf("Command not found\n");
@@ -130,7 +134,12 @@ int main(int argc, char *argv[]){
         else {
             //Parent process
             waitpid(pid, WIFEXITED(1), 0);
-            exit(0);
+            if(quit == 0){
+                pid = fork();
+            }
+            else{
+                exit(0);
+            }
         }
     }
 }
