@@ -35,6 +35,7 @@ int main(int argc, char *argv[]){
             buf[strcspn(buf, "\n")] = 0;
             //check to see if we need to exit the program
             if(strcmp(buf,"quit") == 0){
+                //using a nuke to kill an insect
                 kill(pid, 9);
             }
             // tokenizes the input
